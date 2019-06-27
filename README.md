@@ -1,2 +1,0 @@
-# ChartDemo
-Created with CodeSandbox
