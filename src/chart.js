@@ -125,7 +125,12 @@ const chart = function() {
     const dataLength = data.length;
     for (let i = 0; i < dataLength; i++) {
       let txt = data[i].Date;
-      drawText90(ctx, txt, xPos + 200 / dataLength, yMax + margin.bottom / 3);
+      drawText90(
+        ctx,
+        txt,
+        xPos + 200 / dataLength,
+        yMax + margin.bottom / 3 + 5
+      );
       xPos += xInc;
     }
     for (let i = 0; i < MAX_LABEL; i++) {
