@@ -1,5 +1,12 @@
 import moment from "moment";
-import { initCanvas, drawBar, drawLine } from "./tools/drawTools";
+import {
+  initCanvas,
+  drawBar,
+  drawLine,
+  drawText,
+  drawText90
+} from "./tools/drawTools";
+import { margin } from "./tools/tools";
 import {
   maxValue as maxValueCalc,
   minValue as minValueCalc
@@ -35,9 +42,15 @@ const chart = function() {
     const maxValue = maxValueCalc([...smaData, ...dailyRecords]) + MARGIN_VALUE;
     const minValue = minValueCalc([...smaData, ...dailyRecords]) - MARGIN_VALUE;
     const ratio = yMax / (maxValue - minValue);
-    const barWidth = chartWidth / dailyRecords.length - 10; //margin
+    const barWidth = xMax / dailyRecords.length - 10; //margin
+
+    const maxLabelValue = maxValueCalc(dailyRecords);
+    const minLabelValue = minValueCalc(dailyRecords);
+    console.log(minLabelValue, maxLabelValue);
+
     drawDailyBarChat(dailyRecords, ratio, minValue, barWidth);
     drawSMA(smaData, ratio, minValue, barWidth);
+    renderLinesAndLabels(dailyRecords, maxLabelValue, minLabelValue);
   };
 
   function calculateSMA(dailyRecord, rawData, sma) {
@@ -99,6 +112,43 @@ const chart = function() {
         COLOR.bar
       );
     });
+  }
+
+  function renderLinesAndLabels(data, maxValue, minValue) {
+    const MAX_LABEL = 15;
+    //Vertical guide lines
+    const yInc = yMax / (maxValue - minValue);
+    const yValInc = (maxValue - minValue) / yInc;
+    const xInc = xMax / data.length;
+    let yPos = yMax;
+    let xPos = margin.left;
+    const dataLength = data.length;
+    for (let i = 0; i < dataLength; i++) {
+      let txt = data[i].Date;
+      drawText90(ctx, txt, xPos + 200 / dataLength, yMax + margin.bottom / 3);
+      xPos += xInc;
+    }
+    for (let i = 0; i < MAX_LABEL; i++) {
+      yPos -= i === 0 ? 0 : yInc;
+      //Draw horizontal lines
+      drawLine(ctx, 0, yPos, xMax, yPos, "#E8E8E8");
+      //y axis labels
+      const txt = (minValue + yValInc * i).toFixed(2);
+      const txtSize = ctx.measureText(txt);
+
+      drawText(
+        ctx,
+        txt,
+        margin.left - (txtSize.width >= 14 ? txtSize.width : 10) - 7,
+        yPos + 4
+      );
+    }
+
+    //Vertical line
+    drawLine(ctx, 0, 0, 0, yMax, "black");
+
+    //Horizontal Line
+    drawLine(ctx, 0, yMax, xMax, yMax, "black");
   }
 
   return {
