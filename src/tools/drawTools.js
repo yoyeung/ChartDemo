@@ -44,7 +44,7 @@ export function drawLine(ctx, startX, startY, endX, endY, color) {
 export function drawText90(ctx, txt, x, y) {
   ctx.save();
   ctx.translate(x, y);
-  ctx.rotate(Math.PI * 0.5);
+  ctx.rotate(Math.PI * 0.4);
   ctx.textAlign = "center";
   ctx.fillText(txt, 0, 0);
   ctx.restore();
